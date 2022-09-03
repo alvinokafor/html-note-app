@@ -8,9 +8,8 @@ const notesDB = getSavedNotes()
 
 const filters = {
     searchText: '',
-    sortCheck: false
+    filterBy: 'byEdited'
 }
-
 //renders notes for the first time displaying all notes
 renderNotes(notesDB, filters)
 
@@ -19,47 +18,41 @@ document.querySelector('#search-query').addEventListener('input', function (e) {
     renderNotes(notesDB, filters)
 })
 
-const id = uuidv4()
+
 
 document.querySelector('#noteForm').addEventListener('submit', function (e) {
     e.preventDefault()
+
+    const id = uuidv4()
+    const timeStamp = moment().valueOf()
 
     if (e.target.elements.addNote.value.length !== 0) {
         notesDB.push({
             id: id,
             title: e.target.elements.addNote.value,
-            description: 'default description'
+            description: 'default description',
+            createdAt: timeStamp,
+            updatedAt: timeStamp
         })
     } else {
         notesDB.push({
             id: id,
             title: 'Unnamed Note',
-            description: 'default description'
+            description: 'default description',
+            createdAt: timeStamp,
+            updatedAt: timeStamp
         })
     }
 
     saveNotes(notesDB)
     // renderNotes(notesDB, filters)
-    location.assign('edit.html')
+    location.assign(`edit.html#${id}`)
     e.target.elements.addNote.value = ''
 })
 
 
-// document.querySelector('#sortNotes').addEventListener('change', function(e) {
-//     filters.sortCheck = e.target.checked
+document.querySelector('#sortNotes').addEventListener('change', function (e) {
+    filters.filterBy = e.target.value
+    renderNotes(notesDB, filters)
+})
 
-//     if (filters.sortCheck) {
-//         notesDB.sort(function (a, b) {
-//             if (a.title.toLowerCase() < b.title.toLowerCase()) {
-//                 return -1
-//             } else if (b.title.toLowerCase() < a.title.toLowerCase()) {
-//                 return 1
-//             } else {
-//                 return true
-//             }
-//         } )
-//     } 
-
-//     renderNotes(notesDB, filters)
-    
-// })
