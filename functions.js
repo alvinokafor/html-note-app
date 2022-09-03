@@ -9,6 +9,25 @@ function getSavedNotes () {
     }
 }
 
+//function to save notes
+function saveNotes (notesDB) {
+    localStorage.setItem('note', JSON.stringify(notesDB))
+}
+
+//function to remove notes
+function removeNotes (noteID) {
+    const noteIndex = notesDB.findIndex(function (note) {
+        console.log(noteID)
+        return note.id === noteID
+    })
+
+    if (noteIndex > -1) {
+        notesDB.splice(noteIndex, 1)
+    }
+
+    console.log(noteIndex)
+}
+
 //function to render notes on the browser
 function renderNotes (notesDB, filters) {
     const filteredNotes = notesDB.filter(function (note) {
@@ -25,8 +44,23 @@ function renderNotes (notesDB, filters) {
 
 //function to generate note elements for the DOM
 function generateDOM (note) {
-    const noteItem = document.createElement('p')
-    noteItem.textContent = note.title
+    const noteItem = document.createElement('div')
+    const removeBtn = document.createElement('button')
+    const noteEl = document.createElement('a')
+
+    noteItem.appendChild(removeBtn)
+    noteItem.appendChild(noteEl)
+
+    //event listener for removing notes
+    removeBtn.addEventListener('click', function () {
+        removeNotes(note.id)
+        saveNotes(notesDB)
+        renderNotes(notesDB, filters)
+    })
+
+    noteEl.setAttribute('href', 'edit.html')
+    removeBtn.textContent = 'X'
+    noteEl.textContent = note.title
     return noteItem
 }
 

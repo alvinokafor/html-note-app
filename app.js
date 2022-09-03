@@ -19,25 +19,31 @@ document.querySelector('#search-query').addEventListener('input', function (e) {
     renderNotes(notesDB, filters)
 })
 
+const id = uuidv4()
+
 document.querySelector('#noteForm').addEventListener('submit', function (e) {
     e.preventDefault()
 
     if (e.target.elements.addNote.value.length !== 0) {
         notesDB.push({
+            id: id,
             title: e.target.elements.addNote.value,
             description: 'default description'
         })
     } else {
         notesDB.push({
+            id: id,
             title: 'Unnamed Note',
             description: 'default description'
         })
     }
 
-    localStorage.setItem('note', JSON.stringify(notesDB))
-  
-    renderNotes(notesDB, filters)
+    saveNotes(notesDB)
+    // renderNotes(notesDB, filters)
+    location.assign('edit.html')
+    e.target.elements.addNote.value = ''
 })
+
 
 // document.querySelector('#sortNotes').addEventListener('change', function(e) {
 //     filters.sortCheck = e.target.checked
